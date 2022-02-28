@@ -9,7 +9,6 @@ import editExpense from '../vue/editExpenses';
 import loginPage from '../vue/loginPage';
 import userChangePassword from '../vue/changePassword';
 import createExpenseCategory from '../vue/formCategory';
-import chart from '../vue/renderChart';
 
 const routes = [
 
@@ -83,13 +82,7 @@ const routes = [
         component: editExpense,
         props: true
     },
-    {
 
-        path: '/expense/chart/',
-        name: 'expense.chart',
-        component: chart,
-
-    },
 
 ];
 

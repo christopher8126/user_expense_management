@@ -11,6 +11,7 @@
                 </button>
             </router-link>
             <button class="btn btn-primary" v-if="userRole=='user'" @click="changePasswordLink">Change Password</button>
+            <button class="btn btn-primary" v-if="userRole=='admin'" @click="goToDashboard">Go to dashboard</button>
             <button class="btn btn-danger" @click="logOut">
                 Logout
             </button>
@@ -86,6 +87,12 @@
 
             }
 
+            const goToDashboard = async () => {
+
+                window.location.href = '/all-user'
+
+            }
+
             const changePasswordLink = async () => {
 
                 window.location.href = '/user/change-password'
@@ -104,7 +111,8 @@
                 destroyExpense,
                 logOut,
                 userRole,
-                changePasswordLink
+                changePasswordLink,
+                goToDashboard
 
             }
 

@@ -9,9 +9,6 @@
             <button class="btn btn-primary" @click="categoryForm">
                 Create Expense Category
             </button>
-            <button class="btn btn-primary" @click="chartExpense">
-                View Chart
-            </button>
             <button class="btn btn-danger" @click="logOut">
                 Logout
             </button>
@@ -44,6 +41,10 @@
                 </template>
             </tbody>
         </table>
+        <div class="my-5">
+
+            <BarChart :chart-data="data" :if="graphData.length > 0"/>
+        </div>
     </div>
 </template>
 
@@ -51,19 +52,58 @@
 
     import useUser from '../data/display-user';
     import logoutUser from '../data/logout-user';
-    import { onMounted, defineComponent } from 'vue';
+    import { onMounted, defineComponent, ref, computed } from 'vue';
     import { useRouter } from 'vue-router'
-    import { Bar } from 'vue3-chart-v2'
+    import { BarChart } from 'vue-chart-3';
+    import {Chart, BarController, CategoryScale, LinearScale, BarElement, } from 'chart.js';
     
+    Chart.register(BarController, CategoryScale, LinearScale, BarElement);
 
     export default defineComponent({
+        components: { BarChart },
         setup(){
 
             const { users, getUsers, deleteUsers } = useUser();
             const { logout_process } = logoutUser();
+            const graphLabels = ref([]);
+            const graphData = ref([]);
             const router = useRouter();
 
             onMounted(getUsers);
+            const getAll = async () => {
+
+                let response =  await axios.get('/api/expense/categories');
+                graphLabels.value = response.data.map(value => {
+
+                    return value.category_name
+
+                });
+
+                let temp_data =  await axios.get('/api/expense/data');
+                graphData.value = temp_data.data.map(value => {
+
+                    return value.total_expense;
+
+                });
+
+            }
+
+            getAll();
+
+            const data = computed(() => ({
+
+                labels: graphLabels.value,
+                datasets: [
+
+                    {
+                        label: 'Expense Monitoring',
+                        data: graphData.value,
+                        backgroundColor: '#DBBEFF'
+                    }
+
+                ]
+
+            }));
 
             const destroyUser = async (id) => {
                 if(!window.confirm('Are you sure you want to delete this user? ')){
@@ -89,19 +129,14 @@
 
             }
 
-            const chartExpense = async () => {
-
-                window.location.href = '/expense/chart/';
-
-            }
-
             return{
 
                 users,
                 destroyUser,
                 logOut,
                 categoryForm,
-                chartExpense
+                data,
+                graphData
                 
             }
 

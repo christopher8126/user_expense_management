@@ -132,13 +132,16 @@ class ExpensesController extends Controller
     public function getCategories(){
         $get_categories = DB::table('expenses')->select('category_id', DB::raw('SUM(cost) as total_expense'))->groupBy('category_id')->get();
         dd($get_categories);
-        return ExpenseCategory::all();
+        $response =  ExpenseCategory::all();
+
+        return response()->json($response);
 
     }
 
     public function getData(){
 
-        return DB::table('expenses')->select('category_id', DB::raw('SUM(cost) as total_expense'))->groupBy('category_id')->get();
-
+        $response =  DB::table('expenses')->select('category_id', DB::raw('SUM(cost) as total_expense'))->groupBy('category_id')->get();
+        return response()->json($response);
+        
     }
 }
